@@ -29,6 +29,7 @@ function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
   {
     console.log("that's tomorrow!");
     email.Categories.Add('Arrives Tomorrow');
+    email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
   }
 
