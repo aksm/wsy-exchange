@@ -1,0 +1,13 @@
+{
+  "name": "wsy-exchange",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:aksm/wsy-exchange.git",
+  "author": "Albert Min",
+  "license": "MIT",
+  "dependencies": {
+    "ews-javascript-api": "^0.9.1",
+    "express": "^4.16.2",
+    "moment": "^2.19.1"
+  }
+}
