@@ -126,6 +126,10 @@ service.SubscribeToStreamingNotifications(
         console.log(err);
 });
 
+app.get("/wake", function (req, res) {
+  console.log(req);
+  res.sendStatus(200);
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
