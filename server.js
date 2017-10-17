@@ -5,7 +5,7 @@
 var express = require('express');
 var app = express();
 var ew = require("ews-javascript-api");
-var moment = require("moment");
+var moment = require("moment-timezone");
 var events = require('events');
 // var eventEmitter = new events.EventEmitter();
 
@@ -127,9 +127,9 @@ service.SubscribeToStreamingNotifications(
 });
 
 app.get("/wake", function (req, res) {
-  let timeCheck = moment().tz('America/New_York').format();
-  console.log(timeCheck);
-  console.log(timeCheck.hours());
+  let timeCheck = moment().tz('America/New_York');
+  console.log(timeCheck.format());
+  console.log(timeCheck.format("H");
   res.sendStatus(200);
 });
 
