@@ -74,9 +74,9 @@ function getArrivalDate(email) {
 }
 
 
-var categorizeEmail = (itemIDString) => {
+var categorizeEmail = (itemID) => {
   let emailService = newService();
-  let itemID = new ew.ItemId(itemIDString);
+  // let itemID = new ew.ItemId(itemIDString);
   ew.EmailMessage.Bind(emailService, itemID).then((response) => {
     console.log(response.Subject);
     let dates = getArrivalDate(response);
@@ -132,9 +132,9 @@ streamingService.SubscribeToStreamingNotifications(
 });
 
 app.get("/wake", function (req, res) {
-  let timeCheck = moment().tz('America/New_York');
-  console.log(timeCheck.format());
-  console.log(timeCheck.format("H"));
+  // let timeCheck = moment().tz('America/New_York');
+  // console.log(timeCheck.format());
+  // console.log(timeCheck.format("H"));
   let wakeService = newService();
   wakeService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
     let items = response.items;
