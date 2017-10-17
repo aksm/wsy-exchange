@@ -99,7 +99,7 @@ streamingService.SubscribeToStreamingNotifications(
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(streamingService, 1);
+        let connection = new ew.StreamingSubscriptionConnection(streamingService, 30);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received") //this gives you each notification.
