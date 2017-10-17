@@ -127,7 +127,8 @@ service.SubscribeToStreamingNotifications(
 });
 
 app.get("/wake", function (req, res) {
-  console.log(req);
+  let timeCheck = moment().tz('America/New_York');
+  console.log(timeCheck);
   res.sendStatus(200);
 });
 
