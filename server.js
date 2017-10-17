@@ -129,7 +129,7 @@ service.SubscribeToStreamingNotifications(
 app.get("/wake", function (req, res) {
   let timeCheck = moment().tz('America/New_York');
   console.log(timeCheck.format());
-  console.log(timeCheck.format("H");
+  console.log(timeCheck.format("H"));
   res.sendStatus(200);
 });
 
