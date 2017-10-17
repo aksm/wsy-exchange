@@ -49,9 +49,7 @@ function getArrivalDate(email) {
     let arrivalDate;
 
     if(subject.includes("Booking.com")) {
-    //  console.log(body);
       arrivalDateString = body.substring(body.indexOf("Arrival Date .....: ") + 20,body.indexOf(" Departure Date ...: "));
-      console.log(arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
  
@@ -78,7 +76,7 @@ var categorizeEmail = (itemID) => {
   let emailService = newService();
   // let itemID = new ew.ItemId(itemIDString);
   ew.EmailMessage.Bind(emailService, itemID).then((response) => {
-    console.log(response.Subject);
+    // console.log(response.Subject);
     let dates = getArrivalDate(response);
     addCategory(response, dates.todaysDate, dates.tomorrowsDate, dates.arrivalDate);
   }, function(error) {
@@ -93,8 +91,8 @@ var sharedFolder = new ew.FolderId(ew.WellKnownFolderName.Inbox, sharedAddress);
 
 let streamingService = newService();
 streamingService.SubscribeToStreamingNotifications(
-    [new ew.FolderId(ew.WellKnownFolderName.Inbox)],
-    // [sharedFolder],
+    // [new ew.FolderId(ew.WellKnownFolderName.Inbox)],
+    [sharedFolder],
     ew.EventType.NewMail).then((streamingSubscription) => {
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
@@ -102,7 +100,7 @@ streamingService.SubscribeToStreamingNotifications(
         let connection = new ew.StreamingSubscriptionConnection(streamingService, 30);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
-          console.log("notification received") //this gives you each notification.
+          console.log("notification received"); //this gives you each notification.
           // ew.EwsLogging.Log(a, true, true);
           let notifications = a.Events;
           // console.log(notifications);
