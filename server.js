@@ -136,7 +136,7 @@ app.get("/wake", function (req, res) {
   console.log(timeCheck.format());
   console.log(timeCheck.format("H"));
   let wakeService = newService();
-  wakeService.FindItems(ew.WellKnownFolderName.Inbox, new ew.ItemView(200)).then((response) => {
+  wakeService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
     let items = response.items;
     for(var i = 0; i < items.length; i++) {
       let item = items[i];
