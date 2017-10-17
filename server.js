@@ -94,7 +94,7 @@ service.SubscribeToStreamingNotifications(
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(service, 30);
+        let connection = new ew.StreamingSubscriptionConnection(service, 1);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received") //this gives you each notification.
@@ -127,8 +127,9 @@ service.SubscribeToStreamingNotifications(
 });
 
 app.get("/wake", function (req, res) {
-  let timeCheck = moment().tz('America/New_York');
+  let timeCheck = moment().tz('America/New_York').format();
   console.log(timeCheck);
+  console.log(timeCheck.hours());
   res.sendStatus(200);
 });
 
