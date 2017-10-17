@@ -13,19 +13,21 @@ app.use(express.static('public'));
 
 ew.EwsLogging.DebugLogEnabled = false;
 
-let service = new ew.ExchangeService(ew.ExchangeVersion.Exchange2013);
-service.Credentials = new ew.ExchangeCredentials(process.env.UN, process.env.PW);
-service.Url = new ew.Uri("https://outlook.office365.com/Ews/Exchange.asmx");
-
+function newService() {
+  let service = new ew.ExchangeService(ew.ExchangeVersion.Exchange2013);
+  service.Credentials = new ew.ExchangeCredentials(process.env.UN, process.env.PW);
+  service.Url = new ew.Uri("https://outlook.office365.com/Ews/Exchange.asmx");
+  return service;
+}
 
 function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
   console.log("adding category!");
-  if(arrivalDate == todaysDate && !email.Categories.items.includes('Arrives Today')) {
+  if(arrivalDate == todaysDate && !email.Categories.items.includes('Arrives Today') && !email.Categories.items.includes('Arrives Tomorrow')) {
     console.log("dates match!");
     email.Categories.Add('Arrives Today');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
-  } else if(arrivalDate == tomorrowsDate && !email.Categories.items.includes('Arrives Tomorrow'))
+  } else if(arrivalDate == tomorrowsDate && !email.Categories.items.includes('Arrives Tomorrow') && !email.Categories.items.includes('Arrives Today'))
   {
     console.log("that's tomorrow!");
     email.Categories.Add('Arrives Tomorrow');
@@ -51,15 +53,19 @@ function getArrivalDate(email) {
       arrivalDateString = body.substring(body.indexOf("Arrival Date .....: ") + 20,body.indexOf(" Departure Date ...: "));
       console.log(arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
+      arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
  
     } else if(subject.includes("[TheBookingButton]")) {
       arrivalDateString = body.substring(body.indexOf("Check In Date: ") + 15,body.indexOf("Check Out Date: "));
       arrivalDateTime = new Date(arrivalDateString);
+      arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
       // console.log(arrivalDateTime);
 
+    } else {
+
+      arrivalDate = null;
     }
 
-    arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
     return {
       "todaysDate": todaysDate,
       "tomorrowsDate": tomorrowsDate,
@@ -69,11 +75,9 @@ function getArrivalDate(email) {
 
 
 var categorizeEmail = (itemIDString) => {
-  // let emailService = new ew.ExchangeService(ew.ExchangeVersion.Exchange2013);
-  // emailService.Credentials = new ew.ExchangeCredentials(process.env.UN, process.env.PW);
-  // emailService.Url = new ew.Uri("https://outlook.office365.com/Ews/Exchange.asmx");
+  let emailService = newService();
   let itemID = new ew.ItemId(itemIDString);
-  ew.EmailMessage.Bind(service, itemID).then((response) => {
+  ew.EmailMessage.Bind(emailService, itemID).then((response) => {
     console.log(response.Subject);
     let dates = getArrivalDate(response);
     addCategory(response, dates.todaysDate, dates.tomorrowsDate, dates.arrivalDate);
@@ -87,14 +91,15 @@ var categorizeEmail = (itemIDString) => {
 var sharedAddress = new ew.Mailbox("westside2@ymcanyc.org");
 var sharedFolder = new ew.FolderId(ew.WellKnownFolderName.Inbox, sharedAddress);
 
-service.SubscribeToStreamingNotifications(
+let streamingService = newService();
+streamingService.SubscribeToStreamingNotifications(
     [new ew.FolderId(ew.WellKnownFolderName.Inbox)],
     // [sharedFolder],
     ew.EventType.NewMail).then((streamingSubscription) => {
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(service, 1);
+        let connection = new ew.StreamingSubscriptionConnection(streamingService, 1);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received") //this gives you each notification.
@@ -106,7 +111,7 @@ service.SubscribeToStreamingNotifications(
             let itemEvent = notifications[i];
             // console.log(itemEvent);
             if(itemEvent.eventType == ew.EventType.NewMail) {
-              let itemId = itemEvent.itemId.UniqueId;
+              let itemId = itemEvent.itemId;
               // eventEmitter.emit('categorize', itemId);
               categorizeEmail(itemId);
             }
@@ -130,6 +135,18 @@ app.get("/wake", function (req, res) {
   let timeCheck = moment().tz('America/New_York');
   console.log(timeCheck.format());
   console.log(timeCheck.format("H"));
+  let wakeService = newService();
+  wakeService.FindItems(ew.WellKnownFolderName.Inbox, new ew.ItemView(200)).then((response) => {
+    let items = response.items;
+    for(var i = 0; i < items.length; i++) {
+      let item = items[i];
+      let itemId = item.Id;
+      categorizeEmail(itemId);
+    }
+  }, (error) => {
+    console.log(error);
+  });
+
   res.sendStatus(200);
 });
 
