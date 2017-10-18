@@ -20,6 +20,8 @@ function newService() {
   return service;
 }
 
+let currentService = newService();
+
 function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
   console.log("adding category!");
   if(arrivalDate == todaysDate && !email.Categories.items.includes('Arrives Today') && !email.Categories.items.includes('Arrives Tomorrow')) {
@@ -92,9 +94,9 @@ function getArrivalDate(email) {
 
 
 var categorizeEmail = (itemID) => {
-  let emailService = newService();
+  // let emailService = newService();
   // let itemID = new ew.ItemId(itemIDString);
-  ew.EmailMessage.Bind(emailService, itemID).then((response) => {
+  ew.EmailMessage.Bind(currentService, itemID).then((response) => {
     // console.log(response.Subject);
     let dates = getArrivalDate(response);
     addCategory(response, dates.todaysDate, dates.tomorrowsDate, dates.arrivalDate);
@@ -108,15 +110,15 @@ var categorizeEmail = (itemID) => {
 var sharedAddress = new ew.Mailbox("westside2@ymcanyc.org");
 var sharedFolder = new ew.FolderId(ew.WellKnownFolderName.Inbox, sharedAddress);
 
-let streamingService = newService();
-streamingService.SubscribeToStreamingNotifications(
+// let streamingService = newService();
+currentService.SubscribeToStreamingNotifications(
     // [new ew.FolderId(ew.WellKnownFolderName.Inbox)],
     [sharedFolder],
     ew.EventType.NewMail).then((streamingSubscription) => {
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(streamingService, 30);
+        let connection = new ew.StreamingSubscriptionConnection(currentService, 30);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received"); //this gives you each notification.
