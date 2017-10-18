@@ -53,7 +53,7 @@ function getArrivalDate(email) {
     if(subject.includes("Booking.com")) {
       let arrivalIndex = body.indexOf("Arrival Date .....: ");
       console.log('arrival index: ' + arrivalIndex);
-      let departureIndex = body.indexOf(" Departure Date ...: ");
+      let departureIndex = body.indexOf("Departure Date ...: ");
       console.log('departure index:' + departureIndex);
       arrivalDateString = body.substring(arrivalIndex + 20, departureIndex);
       console.log('arrival datestring' + arrivalDateString);
