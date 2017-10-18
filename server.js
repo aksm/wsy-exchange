@@ -51,14 +51,22 @@ function getArrivalDate(email) {
     let arrivalDate;
 
     if(subject.includes("Booking.com")) {
-      arrivalDateString = body.substring(body.indexOf("Arrival Date .....: ") + 20,body.indexOf(" Departure Date ...: "));
+      let arrivalIndex = body.indexOf("Arrival Date .....: ");
+      console.log('arrival index: ' + arrivalIndex);
+      let departureIndex = body.indexOf(" Departure Date ...: ");
+      console.log('departure index:' + departureIndex);
+      arrivalDateString = body.substring(arrivalIndex + 20, departureIndex);
       console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
       console.log('arrival: ' + arrivalDate);
  
     } else if(subject.includes("[TheBookingButton]")) {
-      arrivalDateString = body.substring(body.indexOf("Check In Date: ") + 15,body.indexOf("Check Out Date: "));
+      let arrivalIndex = body.indexOf("Check In Date: ");
+      console.log('arrival index: ' + arrivalIndex);
+      let departureIndex = body.indexOf("Check Out Date: ");
+      console.log('departure index:' + departureIndex);
+      arrivalDateString = body.substring(arrivalIndex + 15, departureIndex);
       console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
