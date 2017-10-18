@@ -27,6 +27,11 @@ function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
     email.Categories.Add('Arrives Today');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
+  } else if(arrivalDate == todaysDate && email.Categories.items.includes('Arrives Tomorrow'))
+  {
+    email.Categories.Remove('Arrives Tomorrow');
+    email.Categories.Add('Arrives Today');
+    email.Update();
   } else if(arrivalDate == tomorrowsDate && !email.Categories.items.includes('Arrives Tomorrow') && !email.Categories.items.includes('Arrives Today'))
   {
     console.log("that's tomorrow!");
@@ -43,34 +48,34 @@ function getArrivalDate(email) {
     let body = email.Body.text;
     let todaysDateTime = new Date();
     let todaysDate = moment(todaysDateTime).tz('America/New_York').format('MM/DD/YYYY');
-    console.log('today: ' + todaysDate);
+    // console.log('today: ' + todaysDate);
     let tomorrowsDate = moment(todaysDateTime).tz('America/New_York').add(1, 'days').format('MM/DD/YYYY');
-    console.log('tomorrow: ' +tomorrowsDate);
+    // console.log('tomorrow: ' +tomorrowsDate);
     let arrivalDateString = '';
     let arrivalDateTime;
     let arrivalDate;
 
     if(subject.includes("Booking.com")) {
       let arrivalIndex = body.indexOf("Arrival Date .....: ");
-      console.log('arrival index: ' + arrivalIndex);
+      // console.log('arrival index: ' + arrivalIndex);
       let departureIndex = body.indexOf("Departure Date ...: ");
-      console.log('departure index:' + departureIndex);
+      // console.log('departure index:' + departureIndex);
       arrivalDateString = body.substring(arrivalIndex + 20, departureIndex);
-      console.log('arrival datestring' + arrivalDateString);
+      // console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
-      console.log('arrival: ' + arrivalDate);
+      // console.log('arrival: ' + arrivalDate);
  
     } else if(subject.includes("[TheBookingButton]")) {
       let arrivalIndex = body.indexOf("Check In Date: ");
-      console.log('arrival index: ' + arrivalIndex);
+      // console.log('arrival index: ' + arrivalIndex);
       let departureIndex = body.indexOf("Check Out Date: ");
-      console.log('departure index:' + departureIndex);
+      // console.log('departure index:' + departureIndex);
       arrivalDateString = body.substring(arrivalIndex + 15, departureIndex);
-      console.log('arrival datestring' + arrivalDateString);
+      // console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
-      console.log('arrival: ' + arrivalDate);
+      // console.log('arrival: ' + arrivalDate);
       // console.log(arrivalDateTime);
 
     } else {
@@ -111,7 +116,7 @@ streamingService.SubscribeToStreamingNotifications(
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(streamingService, 1);
+        let connection = new ew.StreamingSubscriptionConnection(streamingService, 30);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received"); //this gives you each notification.
@@ -146,7 +151,7 @@ streamingService.SubscribeToStreamingNotifications(
 app.get("/wake", function (req, res) {
   let timeCheck = moment().tz('America/New_York');
   console.log('wake time: ' + timeCheck.format());
-  console.log(timeCheck.format("H"));
+  // console.log(timeCheck.format("H"));
   let wakeService = newService();
   wakeService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
     let items = response.items;
