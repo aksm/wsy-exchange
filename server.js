@@ -43,7 +43,9 @@ function getArrivalDate(email) {
     let body = email.Body.text;
     let todaysDateTime = new Date();
     let todaysDate = moment(todaysDateTime).tz('America/New_York').format('MM/DD/YYYY');
+    console.log('today: ' + todaysDate);
     let tomorrowsDate = moment(todaysDateTime).tz('America/New_York').add(1, 'days').format('MM/DD/YYYY');
+    console.log('tomorrow: ' +tomorrowsDate);
     let arrivalDateString = '';
     let arrivalDateTime;
     let arrivalDate;
@@ -52,11 +54,13 @@ function getArrivalDate(email) {
       arrivalDateString = body.substring(body.indexOf("Arrival Date .....: ") + 20,body.indexOf(" Departure Date ...: "));
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
+      console.log('arrival: ' + arrivalDate);
  
     } else if(subject.includes("[TheBookingButton]")) {
       arrivalDateString = body.substring(body.indexOf("Check In Date: ") + 15,body.indexOf("Check Out Date: "));
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
+      console.log('arrival: ' + arrivalDate);
       // console.log(arrivalDateTime);
 
     } else {
@@ -130,9 +134,9 @@ streamingService.SubscribeToStreamingNotifications(
 });
 
 app.get("/wake", function (req, res) {
-  // let timeCheck = moment().tz('America/New_York');
-  // console.log(timeCheck.format());
-  // console.log(timeCheck.format("H"));
+  let timeCheck = moment().tz('America/New_York');
+  console.log('wake time: ' + timeCheck.format());
+  console.log(timeCheck.format("H"));
   let wakeService = newService();
   wakeService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
     let items = response.items;
