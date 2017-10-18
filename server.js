@@ -52,12 +52,14 @@ function getArrivalDate(email) {
 
     if(subject.includes("Booking.com")) {
       arrivalDateString = body.substring(body.indexOf("Arrival Date .....: ") + 20,body.indexOf(" Departure Date ...: "));
+      console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
       console.log('arrival: ' + arrivalDate);
  
     } else if(subject.includes("[TheBookingButton]")) {
       arrivalDateString = body.substring(body.indexOf("Check In Date: ") + 15,body.indexOf("Check Out Date: "));
+      console.log('arrival datestring' + arrivalDateString);
       arrivalDateTime = new Date(arrivalDateString);
       arrivalDate = moment(arrivalDateTime).format('MM/DD/YYYY');
       console.log('arrival: ' + arrivalDate);
@@ -101,7 +103,7 @@ streamingService.SubscribeToStreamingNotifications(
         // console.log(streamingSubscription);
         // Create a streaming connection to the service object, over which events are returned to the client.
         // Keep the streaming connection open for 30 minutes.
-        let connection = new ew.StreamingSubscriptionConnection(streamingService, 30);
+        let connection = new ew.StreamingSubscriptionConnection(streamingService, 1);
         connection.AddSubscription(streamingSubscription);
         connection.OnNotificationEvent.push((o, a) => {
           console.log("notification received"); //this gives you each notification.
