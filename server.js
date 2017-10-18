@@ -25,7 +25,7 @@ let currentService = newService();
 function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
   console.log("adding category!");
   if(arrivalDate == todaysDate && !email.Categories.items.includes('Arrives Today') && !email.Categories.items.includes('Arrives Tomorrow')) {
-    console.log("dates match!");
+    // console.log("dates match!");
     email.Categories.Add('Arrives Today');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
@@ -36,7 +36,7 @@ function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
     email.Update();
   } else if(arrivalDate == tomorrowsDate && !email.Categories.items.includes('Arrives Tomorrow') && !email.Categories.items.includes('Arrives Today'))
   {
-    console.log("that's tomorrow!");
+    // console.log("that's tomorrow!");
     email.Categories.Add('Arrives Tomorrow');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
@@ -45,7 +45,7 @@ function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
 }
 
 function getArrivalDate(email) {
-    console.log("getting arrival date!");
+    // console.log("getting arrival date!");
     let subject = email.Subject;
     let body = email.Body.text;
     let todaysDateTime = new Date();
@@ -154,8 +154,8 @@ app.get("/wake", function (req, res) {
   let timeCheck = moment().tz('America/New_York');
   console.log('wake time: ' + timeCheck.format());
   // console.log(timeCheck.format("H"));
-  let wakeService = newService();
-  wakeService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
+  // let wakeService = newService();
+  currentService.FindItems(sharedFolder, new ew.ItemView(200)).then((response) => {
     let items = response.items;
     for(var i = 0; i < items.length; i++) {
       let item = items[i];
