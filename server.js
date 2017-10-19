@@ -23,23 +23,26 @@ function newService() {
 let currentService = newService();
 
 function addCategory(email, todaysDate, tomorrowsDate, arrivalDate) {
-  console.log("adding category!");
+  // console.log("adding category!");
   if(arrivalDate == todaysDate && !email.Categories.items.includes('Arrives Today') && !email.Categories.items.includes('Arrives Tomorrow')) {
     // console.log("dates match!");
     email.Categories.Add('Arrives Today');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
+    console.log('email tagged');
   } else if(arrivalDate == todaysDate && email.Categories.items.includes('Arrives Tomorrow'))
   {
     email.Categories.Remove('Arrives Tomorrow');
     email.Categories.Add('Arrives Today');
     email.Update();
+    console.log('email tagged');
   } else if(arrivalDate == tomorrowsDate && !email.Categories.items.includes('Arrives Tomorrow') && !email.Categories.items.includes('Arrives Today'))
   {
     // console.log("that's tomorrow!");
     email.Categories.Add('Arrives Tomorrow');
     email.Flag.FlagStatus = ew.ItemFlagStatus.Flagged;
     email.Update();
+    console.log('email tagged');
   }
 
 }
