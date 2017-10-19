@@ -147,6 +147,7 @@ currentService.SubscribeToStreamingNotifications(
         });
 
         connection.Open();
+        console.log('connection opened');
 
     }, (err) => {
         debugger;
